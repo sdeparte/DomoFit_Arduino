@@ -7,8 +7,8 @@
 #include <qrcode.h>
 #include <IRremote.h>
 
-#include "epd1in54_V2\epd1in54_V2.h"
-#include "epd1in54_V2\epdpaint.h"
+#include "epd1in54_V2.h"
+#include "epdpaint.h"
 
 const char* deeplinkPrefix = "sdeparte://deeplink.domofit.app/?ip=";
 
