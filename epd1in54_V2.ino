@@ -320,11 +320,8 @@ void handleWebSocketMessage(void *arg, uint8_t *data, size_t len) {
 
     if (readString.length() > 5) {
       String command = getValue(readString, ' ', 2);
-      Serial.println(command);
       String address = getValue(readString, ' ', 1);
-      Serial.println(address);
       String protocol = getValue(readString, ' ', 0);
-      Serial.println(protocol);
       
       if(protocol == "ALW"){
         if(address == "TOGGLE"){
