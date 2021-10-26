@@ -440,7 +440,8 @@ void setup()
   
   drawString("Connecting ...");
   
-  pinMode(buttonPin, INPUT);
+  pinMode(buttonPin, INPUT_PULLDOWN);
+  
   pinMode(relaiPin, OUTPUT);
   pinMode(ledPin, OUTPUT);
   
@@ -490,14 +491,13 @@ void loop()
   digitalWrite(relaiPin, lightState);
   digitalWrite(ledPin, forceState);
 
-  /*bool buttonInstantState = digitalRead(buttonPin);
+  bool buttonInstantState = digitalRead(buttonPin);
 
   if (buttonInstantState && buttonInstantState != buttonState) {
-    lightTimer = 200;
-    //toggleForceState();
+    toggleForceState();
   }
 
-  buttonState = buttonInstantState;*/
+  buttonState = buttonInstantState;
 
   decodeIR();
 
