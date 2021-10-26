@@ -25,6 +25,7 @@ const char* password = "MDP";
 int lightTimer = 0;
 
 bool buttonState = false;
+bool pirState = false;
 bool lightState = false;
 bool forceState = false;
 
@@ -441,6 +442,7 @@ void setup()
   drawString("Connecting ...");
   
   pinMode(buttonPin, INPUT_PULLDOWN);
+  pinMode(pirPin, INPUT_PULLDOWN);
   
   pinMode(relaiPin, OUTPUT);
   pinMode(ledPin, OUTPUT);
@@ -490,6 +492,14 @@ void loop()
 
   digitalWrite(relaiPin, lightState);
   digitalWrite(ledPin, forceState);
+
+  bool pirInstantState = digitalRead(pirPin);
+
+  if (pirInstantState && pirInstantState != pirState) {
+    lightTimer = 200;
+  }
+
+  pirState = pirInstantState;
 
   bool buttonInstantState = digitalRead(buttonPin);
 
