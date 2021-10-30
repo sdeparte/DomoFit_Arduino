@@ -133,7 +133,7 @@ const char index_html[] PROGMEM = R"rawliteral(
       <h2>LIGHT</h2>
       <hr />
       <p class="state">Always: <span id="always">%ALWAYS%</span></p>
-      <p class="state">State: <span id="state">%STATE%</span></p>
+      <p class="state">Light: <span id="light">%LIGHT%</span></p>
       <hr />
       <p>
         <button id="button-on" class="button green">ON</button>
@@ -177,8 +177,8 @@ const char index_html[] PROGMEM = R"rawliteral(
     var commande = datas[1];
     if (type == 'ALW') {
       document.getElementById('always').innerHTML = commande == '1' ? 'ON' : 'OFF';
-    } else if (type == 'STA') {
-      document.getElementById('state').innerHTML = commande == '1' ? 'ON' : 'OFF';
+    } else if (type == 'LUM') {
+      document.getElementById('light').innerHTML = commande == '1' ? 'ON' : 'OFF';
     } else {
       document.getElementById('received').innerHTML = event.data;
     }
@@ -218,26 +218,30 @@ void notifyClients(String message) {
 void setLightState(bool state){
   lightState = state;
 
+  notifyLightState();
+}
+
+void notifyLightState(){
   if (lightState) {
-    notifyClients("STA 1");
+    notifyClients("LUM 1");
   } else {
-    notifyClients("STA 0");
+    notifyClients("LUM 0");
   }
 }
 
 void toggleForceState(){
   forceState = !forceState;
 
-  if (forceState) {
-    notifyClients("ALW 1");
-  } else {
-    notifyClients("ALW 0");
-  }
+  notifyForceState();
 }
 
 void setForceState(bool state){
   forceState = state;
 
+  notifyForceState();
+}
+
+void notifyForceState(){
   if (forceState) {
     notifyClients("ALW 1");
   } else {
@@ -336,6 +340,16 @@ void handleWebSocketMessage(void *arg, uint8_t *data, size_t len) {
         if(address == "OFF"){
           setForceState(false);
         }
+        
+        if(address == "STATE"){
+          notifyForceState();
+        }
+      }
+      
+      if(protocol == "LUM"){
+        if(address == "STATE"){
+          notifyLightState();
+        }
       }
       
       if(protocol == "NEC"){
@@ -420,7 +434,7 @@ String processor(const String& var){
     }
   }
 
-  if (var == "STATE") {
+  if (var == "LIGHT") {
     if (lightState) {
       return "ON";
     } else {
