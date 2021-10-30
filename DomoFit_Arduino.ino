@@ -361,7 +361,7 @@ void handleWebSocketMessage(void *arg, uint8_t *data, size_t len) {
       }
       
       if(protocol == "SON"){
-        IrSender.sendSony(strToLong(address), strToLong(command), 0, getMinByteSize(strToLong(command)));
+        IrSender.sendSony(strToLong(address), strToLong(command), 2);
       }
       
       if(protocol == "PAN"){
