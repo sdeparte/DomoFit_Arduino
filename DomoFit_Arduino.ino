@@ -10,7 +10,7 @@
 #include "epd1in54_V2.h"
 #include "epdpaint.h"
 
-const char* deeplinkPrefix = "sdeparte://deeplink.domofit.app/?ip=";
+const char* deeplinkPrefix = "http://deeplink.sdeparte.com/?ip=";
 
 Epd epd;
 unsigned char image[40000];
