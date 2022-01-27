@@ -1,3 +1,5 @@
+#define timeSeconds 30
+
 #include <SPI.h>
 #include <WiFi.h>
 
@@ -22,7 +24,10 @@ Paint paint(image, 0, 0);
 const char* ssid = "SSID";
 const char* password = "MDP";
 
-int lightTimer = 0;
+unsigned long now = millis();
+unsigned long lastTrigger = 0;
+
+boolean lightTimer = false;
 
 bool buttonState = false;
 bool pirState = false;
@@ -447,6 +452,12 @@ String processor(const String& var){
   }
 }
 
+void IRAM_ATTR detectsMovement() {
+  Serial.println("MOTION DETECTED!!!");
+  lightTimer = true;
+  lastTrigger = millis();
+}
+
 void setup()
 {
   Serial.begin(115200);
@@ -456,7 +467,7 @@ void setup()
   drawString("Connecting ...");
   
   pinMode(buttonPin, INPUT_PULLDOWN);
-  pinMode(pirPin, INPUT_PULLDOWN);
+  pinMode(pirPin, INPUT_PULLUP);
   
   pinMode(relaiPin, OUTPUT);
   pinMode(ledPin, OUTPUT);
@@ -486,15 +497,22 @@ void setup()
   IrSender.begin(irSenderPin, ENABLE_LED_FEEDBACK);
   IrReceiver.begin(irReceiverPin, ENABLE_LED_FEEDBACK);
   IrReceiver.start();
+  
+  attachInterrupt(digitalPinToInterrupt(pirPin), detectsMovement, RISING);
 }
 
 void loop()
 {
   ws.cleanupClients();
 
-  if (forceState || lightTimer > 0) {
-    lightTimer = lightTimer - 1;
+  now = millis();
 
+  if (lightTimer && (now - lastTrigger > (timeSeconds * 1000))) {
+    Serial.println("Motion stopped...");
+    lightTimer = false;
+  }
+
+  if (forceState || lightTimer) {
     if (!lightState) {
       setLightState(true);
     }
@@ -506,14 +524,6 @@ void loop()
 
   digitalWrite(relaiPin, lightState);
   digitalWrite(ledPin, forceState);
-
-  bool pirInstantState = digitalRead(pirPin);
-
-  if (pirInstantState && pirInstantState != pirState) {
-    lightTimer = 200;
-  }
-
-  pirState = pirInstantState;
 
   bool buttonInstantState = digitalRead(buttonPin);
 
