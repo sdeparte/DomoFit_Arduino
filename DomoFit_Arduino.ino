@@ -535,7 +535,7 @@ void drawString(const char* string) {
 
   paint.Clear(UNCOLORED);
   paint.DrawStringAt(10, 4, string, &Font16, COLORED);
-  epd.SetFrameMemoryPartial(paint.GetImage(), 0, 0, paint.GetWidth(), paint.GetHeight());
+  epd.SetFrameMemoryPartial(paint.GetImage(), 0, 11, paint.GetWidth(), paint.GetHeight());
   epd.DisplayPartFrame();
 }
 
@@ -559,7 +559,7 @@ void drawQRCode(const char* ipAdresse) {
   paint.SetHeight(200);
   paint.Clear(UNCOLORED);
   paint.DrawRectangle(box_x-1, box_y-1, 182, 199, COLORED);
-  paint.DrawStringAt(10, 4, WiFi.localIP().toString().c_str(), &Font16, COLORED);
+  paint.DrawStringAt(15, 15, WiFi.localIP().toString().c_str(), &Font16, COLORED);
   
   // Create the QR code
   QRCode qrcode;
