@@ -39,7 +39,7 @@ bool forceState = false;
 const int irReceiverPin = 14;
 const int relaiPin = 13;
 const int buttonPin = 26;
-const int pirPin = 27;
+const int pirPin = 34;
 const int ledPin = 33;
 const int irSenderPin = 32;
 
