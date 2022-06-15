@@ -1,4 +1,5 @@
 #define timeSeconds 30
+#define wifiCheckInterval 30000
 
 #include <SPI.h>
 #include <WiFi.h>
@@ -25,6 +26,7 @@ const char* ssid = "SSID";
 const char* password = "MDP";
 
 unsigned long now = millis();
+unsigned long lastWifiCheck = 0;
 unsigned long lastTrigger = 0;
 
 boolean lightTimer = false;
@@ -503,9 +505,16 @@ void setup()
 
 void loop()
 {
-  ws.cleanupClients();
-
   now = millis();
+  
+  if (WiFi.status() != WL_CONNECTED && now - lastWifiCheck >= wifiCheckInterval) {
+    WiFi.disconnect();
+    WiFi.reconnect();
+
+    lastWifiCheck = now;
+  }
+
+  ws.cleanupClients();
 
   if (lightTimer && (now - lastTrigger > (timeSeconds * 1000))) {
     Serial.println("Motion stopped...");
